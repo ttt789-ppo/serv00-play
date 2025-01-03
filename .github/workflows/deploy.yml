@@ -3,7 +3,8 @@ name: 批量保活进程
 on:
   schedule:
     # 使用cron表达式定义任务运行的时间
-    - cron: '3 19 * * *' #凌晨3点3分
+    # github使用utc时间
+    - cron: '3 22 * * *' #北京时间6点
   workflow_dispatch:
 
 jobs:
@@ -16,7 +17,7 @@ jobs:
 
       - name: 安装依赖
         run: |
-          sudo apt-get install expect
+          sudo apt-get install sshpass
           sudo apt-get install jq
 
       - name: 登录各个serv00并执行保活脚本
@@ -26,6 +27,9 @@ jobs:
           TELEGRAM_USERID: ${{secrets.TELEGRAM_USERID}}
           WXSENDKEY: ${{secrets.WXSENDKEY}}
           SENDTYPE: ${{secrets.SENDTYPE}}
+          BUTTON_URL: ${{secrets.BUTTON_URL}}
+          AUTOUPDATE: ${{vars.AUTOUPDATE}}
+          LOGININFO: ${{vars.LOGININFO}}
         run: |
           chmod +x ./revive.sh
           ./revive.sh
